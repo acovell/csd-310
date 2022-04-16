@@ -7,7 +7,7 @@ client = MongoClient(url)
 
 
 db = client.pytech
-print(db.list_collection_names())
-# print("\n -- Pytech Collection List --")
 
-# print(db.list_collection_names())
+print("\n -- Pytech Collection List --")
+
+print(db.list_collection_names())
