@@ -1,38 +1,68 @@
 """ 
-    Title: pytech_queries.py
-    Author: 
-    Date: 
-    Description: Test program for querying the students collection.
+    Alice Covell
+    Module 6 Pytech Delete
+    Professor Woods
+    April 19 2022 
 """
 
-"""import statements"""
+""" import statements """
 from pymongo import MongoClient
 
-# connection string
-url = "mongodb+srv://admin:admin@cluster0.rv5ea.mongodb.net/pytest?retryWrites=true&w=majority"
+# MongoDB connection string 
+url = "mongodb+srv://admin:admin@cluster0.rsnru.mongodb.net/pytech?retryWrites=true&w=majority"
 
-# connect to cluster
+# connect to the MongoDB cluster 
 client = MongoClient(url)
 
 # connect pytech database
 db = client.pytech
 
-print('-- DISPLAYING STUDENTS DOCUMENTS FROM find() QUERY --')
+# get the students collection 
+students = db.students
 
-# loop over the collection and output all students
-student_docs = db.students.find()
-for s in student_docs:
-    print('Student ID: {0}\nFirst Name: {1}\nLast Name: {2}\n'.format(s['student_id'],
-        s['first_name'], s['last_name']))
+# find all students in the collection 
+student_list = students.find({})
 
+# display message 
+print("\n  -- DISPLAYING STUDENTS DOCUMENTS FROM find() QUERY --")
 
+# loop over the collection and output the results 
+for doc in student_list:
+    print("  Student ID: " + doc["student_id"] + "\n  First Name: " + doc["first_name"] + "\n  Last Name: " + doc["last_name"] + "\n")
 
-print('\n-- DISPLAYING STUDENT DOCUMENT FROM find_one() QUERY --')
+# test document 
+test_doc = {
+    "student_id": "1010",
+    "first_name": "John",
+    "last_name": "Doe"
+}
 
-# find document and one student displayed
-student_doc = db.students.find_one({'student_id': 1008})
-print('Student ID: {0}\nFirst Name: {1}\nLast Name: {2}\n'.format(student_doc['student_id'],
-        student_doc['first_name'], student_doc['last_name']))
+# insert the test document into MongoDB atlas 
+test_doc_id = students.insert_one(test_doc).inserted_id
 
-# End program
-input('\n\nEnd of program, press any key to exit... ')
+# insert statements with output 
+print("\n  -- INSERT STATEMENTS --")
+print("  Inserted student record into the students collection with document_id " + str(test_doc_id))
+
+# call the find_one() method by student_id 1010
+student_test_doc = students.find_one({"student_id": "1010"})
+
+# display the results 
+print("\n  -- DISPLAYING STUDENT TEST DOC -- ")
+print("  Student ID: " + student_test_doc["student_id"] + "\n  First Name: " + student_test_doc["first_name"] + "\n  Last Name: " + student_test_doc["last_name"] + "\n")
+
+# call the delete_one method to remove the student_test_doc
+deleted_student_test_doc = students.delete_one({"student_id": "1010"})
+
+# find all students in the collection 
+new_student_list = students.find({})
+
+# display message 
+print("\n  -- DISPLAYING STUDENTS DOCUMENTS FROM find() QUERY --")
+
+# loop over the collection and output the results 
+for doc in new_student_list:
+    print("  Student ID: " + doc["student_id"] + "\n  First Name: " + doc["first_name"] + "\n  Last Name: " + doc["last_name"] + "\n")
+
+# exit message 
+input("\n\n  End of program, press any key to continue...")
